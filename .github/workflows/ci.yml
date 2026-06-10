@@ -42,3 +42,13 @@ jobs:
           format: table
           exit-code: '0'
           severity: HIGH,CRITICAL
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Deploy Application
+        run: |
+          echo "Manual approval completed. Deploying application..."
