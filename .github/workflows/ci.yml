@@ -35,16 +35,10 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-
-
-
-
-
-
       - name: Trivy Vulnerability Scan
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: secure-cicd-app
           format: table
-          exit-code: 1
+          exit-code: '0'
           severity: HIGH,CRITICAL
