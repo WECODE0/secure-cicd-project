@@ -28,23 +28,43 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t secure-cicd-app .
+          docker build -t secure-cicd-app:latest .
+
+  sonarqube-scan:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
+  trivy-scan:
+    needs: sonarqube-scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Build Docker Image for Scan
+        run: |
+          docker build -t secure-cicd-app:latest .
+
       - name: Trivy Vulnerability Scan
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: secure-cicd-app
+          image-ref: secure-cicd-app:latest
           format: table
           exit-code: '0'
           severity: HIGH,CRITICAL
 
   deploy:
-    needs: build-and-test
+    needs: trivy-scan
     runs-on: ubuntu-latest
     environment: production
 
