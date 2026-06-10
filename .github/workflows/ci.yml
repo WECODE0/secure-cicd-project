@@ -31,6 +31,6 @@ jobs:
         docker build -t secure-cicd-app .
 
     - name: SonarCloud Scan
-uses: SonarSource/sonarqube-scan-action@v6
+        uses: SonarSource/sonarqube-scan-action@v6
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
